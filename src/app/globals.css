@@ -1,0 +1,202 @@
+@import "tailwindcss";
+
+/*
+ * YellowBlocks design tokens.
+ * Palette derived from the YellowBlocks house style (documents): charcoal 18212F,
+ * yellow F4C430, neutral greys. Roughly 80% neutral, 15% charcoal, 5% yellow.
+ */
+@theme {
+  /*
+   * Dark, neutral theme (inspired by the Copilot new-tab look the client chose):
+   * warm-neutral greys, no blue tint, yellow as the only accent. Token names are
+   * semantic: "paper" is the light foreground, "canvas" the page background,
+   * "ink" the darkest frame (header, hero, footer, panels).
+   */
+  --color-canvas: #212121;
+  --color-ink: #191919;
+  --color-ink-2: #2a2a2a;
+  --color-ink-3: #333333;
+  --color-ink-line: #3d3d3d;
+  --color-paper: #ededed;
+  --color-mist: #2a2a2a;
+  --color-fog: #333333;
+  --color-line: #3a3a3a;
+  --color-rule: #5c5c5c;
+  --color-slate: #cbcbcb;
+  --color-muted: #a3a3a3;
+  --color-faint: #747474;
+  --color-on-ink: #d4d4d4;
+  --color-on-ink-muted: #a3a3a3;
+
+  --color-yellow: #fec61f;
+  --color-yellow-soft: #3a3218;
+  --color-ochre: #fec61f;
+
+  --color-ok: #4ade80;
+  --color-warn: #fb923c;
+  --color-risk: #f87171;
+  --color-unknown: #a8b3c2;
+
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+  /* Type scale, ratio ~1.25 */
+  --text-xs: 0.8125rem;
+  --text-xs--line-height: 1.45;
+  --text-sm: 0.9375rem;
+  --text-sm--line-height: 1.55;
+  --text-base: 1.0625rem;
+  --text-base--line-height: 1.65;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.55;
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 1.35;
+  --text-2xl: 1.875rem;
+  --text-2xl--line-height: 1.2;
+  --text-3xl: 2.375rem;
+  --text-3xl--line-height: 1.12;
+  --text-4xl: clamp(2.375rem, 1.7rem + 2.4vw, 3.75rem);
+  --text-4xl--line-height: 1.04;
+
+  --radius-block: 5px;
+  --radius-field: 5px;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 6rem;
+  }
+  body {
+    @apply bg-canvas font-sans text-base text-slate antialiased;
+    font-feature-settings: "ss01" 0, "cv11" 1;
+  }
+  h1, h2, h3, h4 {
+    @apply text-paper;
+    font-weight: 650;
+    letter-spacing: -0.018em;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  ::selection {
+    background: var(--color-yellow);
+    color: #191919;
+  }
+  html {
+    color-scheme: dark;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-yellow);
+    outline-offset: 3px;
+    border-radius: 5px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  /* Link style for body copy: underline in yellow, text stays ink for contrast. */
+  .link {
+    @apply text-paper underline decoration-yellow decoration-2 underline-offset-[0.22em] transition-[text-decoration-color] duration-150;
+  }
+  .link:hover {
+    text-decoration-color: var(--color-paper);
+  }
+  .on-ink .link {
+    @apply text-paper;
+  }
+  .on-ink .link:hover {
+    text-decoration-color: var(--color-paper);
+  }
+
+  /* Long-form article typography */
+  .prose-yb {
+    @apply text-base text-slate;
+    max-width: 68ch;
+  }
+  .prose-yb > * + * {
+    margin-top: 1.1em;
+  }
+  .prose-yb h2 {
+    @apply mt-12 text-2xl;
+  }
+  .prose-yb h3 {
+    @apply mt-9 text-xl;
+  }
+  .prose-yb ul {
+    @apply list-none pl-0;
+  }
+  .prose-yb ul > li {
+    @apply relative pl-6;
+  }
+  .prose-yb ul > li + li {
+    margin-top: 0.45em;
+  }
+  .prose-yb ul > li::before {
+    content: "";
+    @apply absolute left-0 top-[0.62em] size-2 bg-yellow;
+  }
+  .prose-yb ol {
+    @apply list-decimal pl-6;
+  }
+  .prose-yb code {
+    @apply rounded-[4px] bg-fog px-1.5 py-0.5 font-mono text-[0.88em] text-paper;
+  }
+  .prose-yb blockquote {
+    @apply rounded-r-[5px] border-l-4 border-yellow bg-mist px-5 py-4 text-slate;
+  }
+  .prose-yb strong {
+    @apply font-semibold text-paper;
+  }
+}
+
+/* Consecutive light sections get a hairline so the rhythm stays readable. */
+main section.bg-canvas + section.bg-canvas,
+main section.bg-mist + section.bg-mist {
+  border-top: 1px solid var(--color-line);
+}
+
+/* Hero lattice: a single orchestrated reveal (see BlockLattice). */
+@keyframes yb-draw {
+  from { stroke-dashoffset: var(--len, 400); }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes yb-appear {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes yb-settle {
+  0% { fill: var(--color-ink-3); }
+  100% { fill: var(--color-yellow); }
+}
+.yb-draw {
+  stroke-dasharray: var(--len, 400);
+  stroke-dashoffset: var(--len, 400);
+  animation: yb-draw 0.9s var(--ease-out-soft) forwards;
+  animation-delay: var(--d, 0s);
+}
+.yb-appear {
+  opacity: 0;
+  animation: yb-appear 0.6s var(--ease-out-soft) forwards;
+  animation-delay: var(--d, 0s);
+}
+.yb-settle {
+  animation: yb-settle 0.5s ease-out forwards;
+  animation-delay: var(--d, 0s);
+}
+@media (prefers-reduced-motion: reduce) {
+  .yb-draw { stroke-dashoffset: 0; animation: none; }
+  .yb-appear { opacity: 1; animation: none; }
+  .yb-settle { fill: var(--color-yellow); animation: none; }
+}

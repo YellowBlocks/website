@@ -1,0 +1,15 @@
+# Netlify: Next.js is detected automatically and served through Netlify's OpenNext adapter
+# (App Router, server actions, ISR/revalidateTag, draft mode and OG images all supported).
+[build]
+  command = "npm run build"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+# Keep deploy previews and branch deploys out of search engines.
+[context.deploy-preview.environment]
+  NEXT_PUBLIC_ALLOW_INDEXING = "0"
+[context.branch-deploy.environment]
+  NEXT_PUBLIC_ALLOW_INDEXING = "0"

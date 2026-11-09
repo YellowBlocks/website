@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="30 10 248 230" role="img" aria-label="YellowBlocks">
+<rect x="30" y="10" width="248" height="230" rx="28" fill="#191919"/>
+<path fill="#e6e6e6" d="M120.06,48.06h50v50h-50v-50Z"/>
+<path fill="#e6e6e6" d="M50.06,113.06h50v50h-50v-50Z"/>
+<path fill="#e6e6e6" d="M120.06,113.06h50v50h-50v-50Z"/>
+<path fill="#e6e6e6" d="M190.06,113.06h50v50h-50v-50Z"/>
+<path fill="#e6e6e6" d="M50.06,177.06h50v50h-50v-50Z"/>
+<path fill="#e6e6e6" d="M190.06,177.06h50v50h-50v-50Z"/>
+<path fill="#fec61f" d="M228.56,24.06h1l1.5,1.5v1l16,16v1l17,17v1l-1.5,1.5h-1l-16,16h-1l-17,17h-1l-1.5-1.5v-1l-16-16v-1l-17-17v-1l1.5-1.5h1l16-16h1l17-17Z"/>
+<path fill="#fec61f" d="M50.06,48.06h50v50h-50v-50Z"/>
+<path fill="#fec61f" d="M120.06,177.06h50v50h-50v-50Z"/>
+</svg>
