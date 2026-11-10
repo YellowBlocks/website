@@ -1,6 +1,6 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { CapabilitiesSection, EngagementSection } from "@/lib/content/types";
-import { BlockBullet, Container, ReviewMarker } from "@/components/ui/primitives";
+import { Accent, BlockBullet, Container, ReviewMarker } from "@/components/ui/primitives";
 
 /** Expertise areas, shown per group as a ruled three-column grid. */
 export function Capabilities({ s }: { s: CapabilitiesSection }) {
@@ -9,7 +9,7 @@ export function Capabilities({ s }: { s: CapabilitiesSection }) {
       <Container>
         <div className="max-w-[46rem]">
           <h2 id="op-elk-vlak-h" className="text-2xl sm:text-3xl">
-            {s.heading}
+            <Accent text={s.heading} />
           </h2>
           {s.intro ? <p className="mt-5 text-lg text-slate">{s.intro}</p> : null}
         </div>
@@ -71,7 +71,7 @@ export function Engagement({ s }: { s: EngagementSection }) {
       <Container className="grid gap-10 lg:grid-cols-12 lg:gap-12">
         <div className="lg:col-span-4">
           <h2 id="samenwerken-h" className="text-2xl sm:text-3xl">
-            {s.heading}
+            <Accent text={s.heading} />
           </h2>
           {s.intro ? <p className="mt-5 max-w-[46ch] text-muted">{s.intro}</p> : null}
         </div>

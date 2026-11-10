@@ -1,10 +1,11 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { startTransition, useActionState, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { submitContact, type ContactState } from "@/app/contact/actions";
+import { submitContact, type ContactState } from "@/app/[lang]/contact/actions";
 import { scopeQuestions } from "@/lib/forms/contact";
 import { track } from "@/lib/analytics/events";
+import { useDictionary, useLocale } from "@/lib/i18n/client";
 
 interface Props {
   topics: { value: string; label: string }[];
@@ -17,9 +18,11 @@ const initial: ContactState = { status: "idle" };
 const noopSubscribe = () => () => {};
 
 const fieldBase =
-  "mt-2 block w-full rounded-[var(--radius-field)] border bg-mist px-4 py-3 text-base text-paper placeholder:text-faint transition-[border-color,box-shadow] focus:border-rule focus:outline-none focus:ring-2 focus:ring-yellow";
+  "mt-2 block w-full rounded-[var(--radius-field)] border bg-ink px-4 py-3 text-base text-paper placeholder:text-faint transition-[border-color,box-shadow] focus:border-rule focus:outline-none focus:ring-2 focus:ring-yellow";
 
 export function ContactForm({ topics, phone, phoneHref }: Props) {
+  const lang = useLocale();
+  const t = useDictionary().form;
   const [state, action, pending] = useActionState(submitContact, initial);
   const [chosenTopic, setChosenTopic] = useState<string | null>(null);
   const started = useRef(false);
@@ -54,14 +57,14 @@ export function ContactForm({ topics, phone, phoneHref }: Props) {
 
   if (state.status === "success") {
     return (
-      <div ref={statusRef} tabIndex={-1} role="status" className="rounded-[5px] border-t-[5px] border-yellow bg-mist p-8 focus:outline-none">
-        <h2 className="text-2xl">Bedankt, je bericht is verstuurd</h2>
+      <div ref={statusRef} tabIndex={-1} role="status" className="rounded-[12px] border border-yellow/40 bg-yellow/[0.06] p-8 focus:outline-none">
+        <h2 className="text-2xl">{t.thanksTitle}</h2>
         <p className="mt-3 max-w-[52ch] text-slate">
-          {state.message ?? "We lezen je vraag en reageren persoonlijk per e-mail met een voorstel voor het vervolg."}
+          {state.message ?? t.thanksBody}
         </p>
         <p className="mt-6">
           <Link href="/inzichten" className="link font-semibold">
-            Lees intussen een van de inzichten
+            {t.thanksLink}
           </Link>
         </p>
       </div>
@@ -70,7 +73,7 @@ export function ContactForm({ topics, phone, phoneHref }: Props) {
 
   const err = state.errors ?? {};
   const v = state.values ?? {};
-  const scopeQ = scopeQuestions[topic];
+  const scopeQ = scopeQuestions(lang)[topic];
 
   return (
     <form
@@ -86,7 +89,7 @@ export function ContactForm({ topics, phone, phoneHref }: Props) {
       noValidate className="space-y-6" aria-describedby="form-status">
       <div ref={statusRef} tabIndex={-1} id="form-status" aria-live="polite" className="focus:outline-none">
         {state.status === "error" && state.message ? (
-          <p className="border-l-4 border-risk rounded-r-[5px] bg-[#3a2424] px-4 py-3 text-paper">
+          <p className="border-l-4 border-risk rounded-r-[var(--radius-block)] bg-[#3a2424] px-4 py-3 text-paper">
             {state.message}{" "}
             {!state.errors ? (
               <a href={phoneHref} className="link font-semibold">
@@ -98,19 +101,19 @@ export function ContactForm({ topics, phone, phoneHref }: Props) {
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2">
-        <Field id="name" label="Naam" error={err.name}>
+        <Field id="name" label={t.name} error={err.name}>
           <input id="name" name="name" autoComplete="name" required defaultValue={v.name} aria-invalid={!!err.name} aria-describedby={err.name ? "name-error" : undefined} className={`${fieldBase} ${err.name ? "border-risk" : "border-line"}`} />
         </Field>
-        <Field id="company" label="Organisatie" error={err.company}>
+        <Field id="company" label={t.company} error={err.company}>
           <input id="company" name="company" autoComplete="organization" required defaultValue={v.company} aria-invalid={!!err.company} aria-describedby={err.company ? "company-error" : undefined} className={`${fieldBase} ${err.company ? "border-risk" : "border-line"}`} />
         </Field>
       </div>
 
-      <Field id="email" label="Zakelijk e-mailadres" error={err.email}>
+      <Field id="email" label={t.email} error={err.email}>
         <input id="email" name="email" type="email" inputMode="email" autoComplete="email" required defaultValue={v.email} aria-invalid={!!err.email} aria-describedby={err.email ? "email-error" : undefined} className={`${fieldBase} ${err.email ? "border-risk" : "border-line"}`} />
       </Field>
 
-      <Field id="topic" label="Waar gaat je vraag over?" error={err.topic}>
+      <Field id="topic" label={t.topic} error={err.topic}>
         <select
           id="topic"
           name="topic"
@@ -122,7 +125,7 @@ export function ContactForm({ topics, phone, phoneHref }: Props) {
           className={`${fieldBase} appearance-none bg-[url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23a3a3a3' stroke-width='2'/%3E%3C/svg%3E")] bg-[position:right_1rem_center] bg-no-repeat pr-10 ${err.topic ? "border-risk" : "border-line"}`}
         >
           <option value="" disabled>
-            Kies een onderwerp
+            {t.chooseTopic}
           </option>
           {topics.map((t) => (
             <option key={t.value} value={t.value}>
@@ -135,11 +138,11 @@ export function ContactForm({ topics, phone, phoneHref }: Props) {
       {scopeQ ? (
         <fieldset>
           <legend className="font-semibold text-paper">
-            {scopeQ.label} <span className="font-normal text-muted">(optioneel, helpt bij de inschatting)</span>
+            {scopeQ.label} <span className="font-normal text-muted">{t.optional}</span>
           </legend>
           <div className="mt-3 flex flex-wrap gap-2">
             {scopeQ.options.map((o) => (
-              <label key={o} className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-[5px] border border-line px-4 has-[:checked]:border-rule has-[:checked]:bg-mist has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-yellow">
+              <label key={o} className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-[var(--radius-block)] border border-line px-4 has-[:checked]:border-yellow/60 has-[:checked]:bg-yellow/10 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-yellow">
                 <input type="radio" name="scope" value={o} defaultChecked={v.scope === o} className="accent-[var(--color-yellow)]" />
                 {o}
               </label>
@@ -149,7 +152,7 @@ export function ContactForm({ topics, phone, phoneHref }: Props) {
         </fieldset>
       ) : null}
 
-      <Field id="message" label="Je vraag" hint="Bijvoorbeeld: wat je wilt weten, de omvang van je omgeving en of er een beheerpartij is. Deel geen wachtwoorden, configuratie-exports of andere gevoelige gegevens." error={err.message}>
+      <Field id="message" label={t.message} hint={t.messageHint} error={err.message}>
         <textarea id="message" name="message" rows={6} required defaultValue={v.message} aria-invalid={!!err.message} aria-describedby={`message-hint${err.message ? " message-error" : ""}`} className={`${fieldBase} resize-y ${err.message ? "border-risk" : "border-line"}`} />
       </Field>
 
@@ -159,14 +162,15 @@ export function ContactForm({ topics, phone, phoneHref }: Props) {
         <input id="website" name="website" tabIndex={-1} autoComplete="off" />
       </div>
       <input ref={renderedAtRef} type="hidden" name="t" defaultValue="" />
+      <input type="hidden" name="lang" value={lang} />
 
       <div>
         <label className="flex cursor-pointer gap-3">
           <input type="checkbox" name="consent" required aria-invalid={!!err.consent} aria-describedby={err.consent ? "consent-error" : undefined} className="mt-1 size-5 shrink-0 accent-[var(--color-yellow)]" />
           <span className="text-slate">
-            Ik ga akkoord met het gebruik van mijn gegevens om deze vraag te beantwoorden, zoals beschreven in de{" "}
+            {t.consentBefore}{" "}
             <Link href="/privacy" className="link" target="_blank">
-              privacyverklaring
+              {t.consentLink}
             </Link>
             .
           </span>
@@ -178,8 +182,8 @@ export function ContactForm({ topics, phone, phoneHref }: Props) {
         ) : null}
       </div>
 
-      <button type="submit" disabled={pending} className="inline-flex min-h-12 items-center justify-center rounded-[5px] bg-yellow px-6 font-semibold text-ink transition-colors hover:bg-[#ffd65a] disabled:cursor-wait disabled:opacity-70">
-        {pending ? "Bezig met verzenden" : "Verstuur je vraag"}
+      <button type="submit" disabled={pending} className="inline-flex min-h-12 items-center justify-center rounded-[var(--radius-block)] bg-yellow px-7 font-semibold text-ink shadow-[0_8px_24px_-12px_rgb(254_198_31/0.6)] transition-colors hover:bg-yellow-2 disabled:cursor-wait disabled:opacity-70">
+        {pending ? t.sending : t.submit}
       </button>
     </form>
   );

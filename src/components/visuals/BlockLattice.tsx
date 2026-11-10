@@ -38,6 +38,35 @@ const links: { from: string; to: string; delay: number }[] = [
 
 const byId = Object.fromEntries(blocks.map((b) => [b.id, b]));
 
+type Lang = "nl" | "en";
+const EN: Record<string, { title: string; detail?: string }> = {
+  b1: { title: "Compliance policy" },
+  b2: { title: "Assignment filter" },
+  b4: { title: "312 devices" },
+  b5: { title: "Context, to confirm", detail: "upgrade to 24H2" },
+  b6: { title: "Outside assignment", detail: "no compliance check" },
+  b7: { title: "Advice", detail: "apply the filter\nto all builds" },
+};
+const label = (b: Block, lang: Lang) => (lang === "en" ? { title: EN[b.id]?.title ?? b.title, detail: EN[b.id]?.detail ?? b.detail } : b);
+const TEXT = {
+  nl: {
+    title:
+      "Illustratief voorbeeld: een compliance-policy, een toewijzingsfilter en een Conditional Access-policy leiden samen tot 312 apparaten buiten de compliance-toewijzing. Advies: het filter build-onafhankelijk maken.",
+    config: "Configuratie",
+    context: "Te bevestigen context",
+    insight: "Inzicht en advies",
+    note: "Illustratief voorbeeld, fictieve gegevens.",
+  },
+  en: {
+    title:
+      "Illustrative example: a compliance policy, an assignment filter and a Conditional Access policy together leave 312 devices outside the compliance assignment. Advice: make the filter independent of the build.",
+    config: "Configuration",
+    context: "Context to confirm",
+    insight: "Insight and advice",
+    note: "Illustrative example, fictional data.",
+  },
+};
+
 function path(layout: "d" | "m", from: Block, to: Block) {
   const a = from[layout];
   const b = to[layout];
@@ -92,15 +121,12 @@ function Lattice({ layout, width, height }: { layout: "d" | "m"; width: number; 
   );
 }
 
-function Diagram({ layout }: { layout: "d" | "m" }) {
+function Diagram({ layout, lang }: { layout: "d" | "m"; lang: Lang }) {
   const width = layout === "d" ? 600 : 340;
   const height = layout === "d" ? 380 : 534;
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="h-auto w-full" role="img" aria-labelledby={`lattice-title-${layout}`}>
-      <title id={`lattice-title-${layout}`}>
-        Illustratief voorbeeld: een compliance-policy, een toewijzingsfilter en een Conditional Access-policy leiden samen tot 312 apparaten
-        buiten de compliance-toewijzing. Advies: het filter build-onafhankelijk maken.
-      </title>
+      <title id={`lattice-title-${layout}`}>{TEXT[lang].title}</title>
       <Lattice layout={layout} width={width} height={height} />
       {links.map((l) => {
         const p = path(layout, byId[l.from], byId[l.to]);
@@ -124,10 +150,10 @@ function Diagram({ layout }: { layout: "d" | "m" }) {
             <rect x={r.x} y={r.y} width={r.w} height={r.h} fill={s.fill} stroke={s.stroke} strokeWidth="1.5" strokeDasharray={s.dash} rx="5" />
             {b.kind === "advice" ? <rect x={r.x} y={r.y} width="6" height={r.h} fill="var(--color-ink)" opacity="0.85" /> : null}
             <text x={r.x + (b.kind === "advice" ? 18 : 12)} y={r.y + (layout === "m" ? 20 : 23)} fontSize="13" fontWeight="600" fill={s.title} fontFamily="var(--font-sans)">
-              {b.title}
+              {label(b, lang).title}
             </text>
             <text x={r.x + (b.kind === "advice" ? 18 : 12)} y={r.y + (layout === "m" ? 38 : 43)} fontSize="11" fill={s.detail} fontFamily="var(--font-mono)">
-              {b.detail.split("\n").map((line, i) => (
+              {label(b, lang).detail.split("\n").map((line, i) => (
                 <tspan key={line} x={r.x + (b.kind === "advice" ? 18 : 12)} dy={i === 0 ? 0 : 15}>
                   {line}
                 </tspan>
@@ -140,26 +166,27 @@ function Diagram({ layout }: { layout: "d" | "m" }) {
   );
 }
 
-export function BlockLattice() {
+export function BlockLattice({ lang = "nl" }: { lang?: Lang }) {
+  const t = TEXT[lang];
   return (
     <figure className="relative">
       <div className="hidden sm:block">
-        <Diagram layout="d" />
+        <Diagram layout="d" lang={lang} />
       </div>
       <div className="sm:hidden">
-        <Diagram layout="m" />
+        <Diagram layout="m" lang={lang} />
       </div>
       <figcaption className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs text-on-ink-muted">
         <span className="inline-flex items-center gap-2">
-          <span className="size-2.5 border border-ink-line bg-ink-2" aria-hidden="true" /> Configuratie
+          <span className="size-2.5 border border-ink-line bg-ink-2" aria-hidden="true" /> {t.config}
         </span>
         <span className="inline-flex items-center gap-2">
-          <span className="size-2.5 border border-dashed border-on-ink-muted" aria-hidden="true" /> Te bevestigen context
+          <span className="size-2.5 border border-dashed border-on-ink-muted" aria-hidden="true" /> {t.context}
         </span>
         <span className="inline-flex items-center gap-2">
-          <span className="size-2.5 bg-yellow" aria-hidden="true" /> Inzicht en advies
+          <span className="size-2.5 bg-yellow" aria-hidden="true" /> {t.insight}
         </span>
-        <span>Illustratief voorbeeld, fictieve gegevens.</span>
+        <span>{t.note}</span>
       </figcaption>
     </figure>
   );

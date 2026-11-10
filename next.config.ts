@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { routeSegmentsNlToEn } from "./src/lib/i18n/config";
 
 /**
  * Content Security Policy.
@@ -81,7 +82,41 @@ const nextConfig: NextConfig = {
       { source: "/diensten", destination: "/oplossingen", permanent: true },
       { source: "/blog", destination: "/inzichten", permanent: true },
       { source: "/blog/:slug", destination: "/inzichten/:slug", permanent: true },
+      { source: "/en/solutions/conditional-access-scan", destination: "/en/solutions/conditional-access-assessment", permanent: true },
+      { source: "/en/solutions/microsoft-365-health-scan", destination: "/en/solutions/microsoft-365-health-check", permanent: true },
+      // The internal locale prefix for Dutch is never public: /nl/... -> /...
+      { source: "/nl", destination: "/", permanent: true },
+      { source: "/nl/:path*", destination: "/:path*", permanent: true },
+      // Dutch-only articles have no English page.
+      { source: "/en/insights/:slug", destination: "/inzichten/:slug", permanent: false },
     ];
+  },
+  /*
+   * Locale routing (see src/lib/i18n/config.ts). All pages live under app/[lang] with
+   * Dutch folder names. These rewrites map public URLs onto them before the filesystem
+   * is checked, so every page remains statically generated:
+   *   /                      -> /nl
+   *   /oplossingen/x         -> /nl/oplossingen/x
+   *   /en/solutions/x        -> /en/oplossingen/x
+   */
+  async rewrites() {
+    // Only top-level folders are rewritten; translated slugs (tenant-continuity) are
+    // generated as English params by the page itself.
+    const en = Object.entries(routeSegmentsNlToEn).flatMap(([nlSeg, enSeg]) => [
+      { source: `/en/${enSeg}`, destination: `/en/${nlSeg}` },
+      { source: `/en/${enSeg}/:rest*`, destination: `/en/${nlSeg}/:rest*` },
+    ]);
+    return {
+      beforeFiles: [
+        ...en,
+        { source: "/", destination: "/nl" },
+        {
+          // Everything that is not English, internal, an API route or a static file.
+          source: "/:path((?!en(?:/|$)|nl(?:/|$)|_next/|api/|brand/)(?!.*\\.).+)",
+          destination: "/nl/:path",
+        },
+      ],
+    };
   },
 };
 

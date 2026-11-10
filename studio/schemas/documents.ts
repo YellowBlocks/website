@@ -1,4 +1,4 @@
-import { defineArrayMember, defineField, defineType } from "sanity";
+import { defineArrayMember, defineField, defineType, type SlugValidationContext } from "sanity";
 import { sectionsField } from "./sections";
 
 const status = defineField({
@@ -17,7 +17,30 @@ const status = defineField({
   validation: (r) => r.required(),
 });
 
-const slug = (source = "title") => defineField({ name: "slug", type: "slug", options: { source, maxLength: 80 }, validation: (r) => r.required() });
+/**
+ * Language of the document. Dutch and English versions are separate documents with
+ * the same slug; the website picks the one matching the visitor's locale.
+ */
+const language = defineField({
+  name: "language",
+  title: "Taal",
+  type: "string",
+  options: { list: [{ title: "Nederlands", value: "nl" }, { title: "English", value: "en" }], layout: "radio", direction: "horizontal" },
+  initialValue: "nl",
+  validation: (r) => r.required(),
+});
+
+/** Slugs only need to be unique per document type and language (nl and en share slugs). */
+const isUniquePerLanguage = async (value: string, context: SlugValidationContext) => {
+  const { document, getClient } = context;
+  const id = (document?._id ?? "").replace(/^drafts\./, "");
+  const params = { type: document?._type, slug: value, lang: (document as { language?: string } | undefined)?.language ?? "nl", draft: `drafts.${id}`, published: id };
+  const query = `!defined(*[_type == $type && slug.current == $slug && coalesce(language, "nl") == $lang && !(_id in [$draft, $published])][0]._id)`;
+  return getClient({ apiVersion: "2025-01-01" }).fetch<boolean>(query, params);
+};
+
+const slug = (source = "title") =>
+  defineField({ name: "slug", type: "slug", options: { source, maxLength: 80, isUnique: isUniquePerLanguage }, validation: (r) => r.required() });
 
 export const solution = defineType({
   name: "solution",
@@ -31,6 +54,7 @@ export const solution = defineType({
   ],
   fields: [
     defineField({ name: "title", title: "Naam", type: "string", group: "main", validation: (r) => r.required() }),
+    defineField({ ...language, group: "main" }),
     slug(),
     defineField({ ...status, group: "main" }),
     defineField({
@@ -67,9 +91,11 @@ export const solutionCategory = defineType({
   type: "document",
   fields: [
     defineField({ name: "title", type: "string", validation: (r) => r.required() }),
+    language,
     defineField({
       name: "slug",
       type: "slug",
+      options: { isUnique: isUniquePerLanguage },
       description: "Moet overeenkomen met de categorie op een oplossing: assessment, product of service.",
       validation: (r) => r.required(),
     }),
@@ -109,12 +135,14 @@ export const page = defineType({
   name: "page",
   title: "Pagina",
   type: "document",
-  description: "Home, werkwijze, over-ons en juridische pagina's. De slug bepaalt welke route de pagina gebruikt.",
+  description: "Home, werkwijze, over-ons en juridische pagina's. De slug bepaalt welke route de pagina gebruikt; maak per taal een eigen document.",
   fields: [
-    defineField({ name: "title", type: "string", validation: (r) => r.required() }),
+    defineField({ name: "title", type: "string", description: "Woorden tussen *sterretjes* krijgen de gele accentkleur.", validation: (r) => r.required() }),
+    language,
     defineField({
       name: "slug",
       type: "slug",
+      options: { isUnique: isUniquePerLanguage },
       validation: (r) => r.required(),
       description: "home, werkwijze, over-ons, privacy, cookies of voorwaarden",
     }),
@@ -184,6 +212,7 @@ export const siteSettings = defineType({
   title: "Site-instellingen",
   type: "document",
   fields: [
+    language,
     defineField({ name: "name", type: "string" }),
     defineField({ name: "legalName", type: "string" }),
     defineField({ name: "tagline", type: "string" }),

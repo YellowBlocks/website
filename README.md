@@ -26,15 +26,17 @@ Measured on a local production build, simulated mobile: Lighthouse performance 9
 
 ```
 src/
-  app/                      Routes (one folder per URL) + sitemap, robots, OG images, API routes
+  app/
+    [lang]/                 All pages, per locale (nl, en), with Dutch folder names; root layout lives here
+    [lang]/contact/actions.ts  Server action for the contact form
     api/draft               Enables draft mode for CMS previews
     api/revalidate          Sanity webhook target (tag-based revalidation)
-    contact/actions.ts      Server action for the contact form
+    sitemap.ts, robots.ts   Locale-aware sitemap with hreflang alternates
   components/
     layout/                 Header, mobile nav, footer, page hero, content page template
     sections/               Reusable CMS sections + SectionRenderer registry
     ui/                     Primitives (Container, ButtonLink, SplitSection…), Portable Text renderer
-    visuals/                Wordmark (interim logo), BlockLattice hero diagram
+    visuals/                Wordmark (official logo), layer stack and diagrams
     forms/                  Contact form (client)
     analytics/              Consent-aware analytics loader, cookie settings button
   config/site.ts            Environment-driven site configuration
@@ -43,10 +45,21 @@ src/
     seo/                    Metadata builder, JSON-LD, OG renderer
     forms/                  Validation, rate limiting, e-mail delivery
     analytics/              Event names, consent store
-  fonts/                    Self-hosted Figtree + JetBrains Mono (SIL OFL)
+    i18n/                   Locales, URL mapping, UI dictionaries (nl/en), server + client locale helpers
+  fonts/                    Self-hosted Space Grotesk, Inter, JetBrains Mono (SIL OFL)
 studio/                     Sanity Studio (separate package)
 docs/                       Strategy and approval checklist
 ```
+
+## Languages (NL / EN)
+
+- Dutch is the default and lives at the root (`/oplossingen/intune-assessment`); English lives under `/en` with English path segments (`/en/solutions/intune-assessment`). The EN | NL switch in the header links to the same page in the other language.
+- Internally every page lives under `src/app/[lang]/` with Dutch folder names. `rewrites()` in `next.config.ts` maps the public URLs onto those routes; all pages stay statically generated. `/nl/...` redirects to `/...`.
+- In code, always link with the internal Dutch path (`/oplossingen`, `/contact?onderwerp=...`) using `@/components/ui/Link`; it turns that into the right public URL for the active language. The segment and slug translations are in `src/lib/i18n/config.ts`.
+- UI strings (navigation, form labels and errors, cookie banner) are in `src/lib/i18n/dictionaries.ts`. Page and service copy is content: `src/lib/content/local/*` (Dutch) and `src/lib/content/local/en/*` (English), or Sanity documents with **Taal** set to Nederlands or English.
+- Articles are Dutch only. The English insights page lists them with a note; `/en/insights/<slug>` redirects to the Dutch article.
+- Every page has `hreflang` alternates (`nl`, `en`, `x-default`) and the sitemap lists both languages.
+- Words between `*asterisks*` in a heading or page title get the yellow gradient accent.
 
 **Content flow:** pages call `src/lib/content/repository.ts`. When `NEXT_PUBLIC_SANITY_PROJECT_ID` is set, it queries Sanity. Otherwise it returns the seed in `src/lib/content/local`. Both return the same types (`src/lib/content/types.ts`), and those match the Studio schemas field for field.
 
@@ -105,7 +118,7 @@ Hardening note: `SANITY_STUDIO_*` variables end up in the Studio bundle. Keep th
 
 ## Adding a new product or service (no developer needed)
 
-1. In the Studio, open **Oplossingen** and choose **Create**.
+1. In the Studio, open **Oplossingen** and choose **Create**. Make one document per language (**Taal**: Nederlands / English) with the same slug.
 2. Fill in **Basis**: name, slug (generated), category (Assessment, Product or Dienst), short name, summary, outcome, audience and an optional price hint.
 3. Fill in **Hero**: the core question (becomes the H1), the introduction and the calls to action. Point the primary CTA to `/contact?onderwerp=<slug>`.
 4. Under **Secties**, add blocks in any order: Probleem, Contrast, Voorbeeldinzicht, Scope, Opleveringen, Proces, Doelgroepen, Scope en beperkingen, Prijs en scope, Veelgestelde vragen, Tekstblok and Afsluitende CTA.
@@ -130,7 +143,7 @@ Adding a **new kind** of section (a new layout) is developer work done once: add
 - Canonicals, Open Graph and Twitter cards are built in `src/lib/seo/metadata.ts`. OG images are generated per solution and per article.
 - JSON-LD: Organization/ProfessionalService (every page), BreadcrumbList (inner pages), Service (solutions; includes a price only for a fixed price) and Article (articles).
 - The sitemap includes only published, indexable content. Add redirects in `next.config.ts` → `redirects()`.
-- Multilingual: add `/en` routes and `alternates.languages` in `pageMetadata` only once translated pages exist.
+- Multilingual: `pageMetadata` adds canonical + `hreflang` alternates for every locale the page exists in (see "Languages").
 
 ## Analytics configuration
 

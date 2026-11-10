@@ -28,6 +28,26 @@ const boxes: Box[] = [
 
 const byId = Object.fromEntries(boxes.map((b) => [b.id, b]));
 
+type Lang = "nl" | "en";
+const EN: Record<string, { title?: string; detail: string }> = {
+  id: { detail: "Entra ID, access policies" },
+  graph: { detail: "read, compare, automate" },
+  scale: { title: "Scalability", detail: "multi-tenant, as code" },
+};
+const label = (b: Box, lang: Lang) => (lang === "en" ? { title: EN[b.id]?.title ?? b.title, detail: EN[b.id]?.detail ?? b.detail } : b);
+const TEXT = {
+  nl: {
+    title: "Identity, Microsoft 365 en modern work, verbonden via de Microsoft Graph API met automation, schaalbaarheid en monitoring.",
+    domains: "Domeinen",
+    insight: "Inzicht",
+  },
+  en: {
+    title: "Identity, Microsoft 365 and modern work, connected through the Microsoft Graph API with automation, scalability and monitoring.",
+    domains: "Domains",
+    insight: "Insight",
+  },
+};
+
 /** Vertical connectors between the domain row, the spine and the discipline row. */
 const linksDesktop = ["id", "m365", "mw"].map((id, i) => {
   const b = byId[id].d;
@@ -54,7 +74,7 @@ const styleFor = (kind: Kind) => {
   }
 };
 
-function Diagram({ layout }: { layout: "d" | "m" }) {
+function Diagram({ layout, lang }: { layout: "d" | "m"; lang: Lang }) {
   const width = layout === "d" ? 600 : 340;
   const height = layout === "d" ? 344 : 478;
   const dots: { x: number; y: number }[] = [];
@@ -62,9 +82,7 @@ function Diagram({ layout }: { layout: "d" | "m" }) {
 
   return (
     <svg viewBox={`0 0 ${width} ${height}`} className="h-auto w-full" role="img" aria-labelledby={`domains-title-${layout}`}>
-      <title id={`domains-title-${layout}`}>
-        Identity, Microsoft 365 en modern work, verbonden via de Microsoft Graph API met automation, schaalbaarheid en monitoring.
-      </title>
+      <title id={`domains-title-${layout}`}>{TEXT[lang].title}</title>
       <g aria-hidden="true">
         {dots.map((c) => (
           <rect key={`${c.x}-${c.y}`} x={c.x} y={c.y} width="3" height="3" fill="var(--color-ink-line)" />
@@ -96,10 +114,10 @@ function Diagram({ layout }: { layout: "d" | "m" }) {
             <rect x={r.x} y={r.y} width={r.w} height={r.h} fill={s.fill} stroke={s.stroke} strokeWidth="1.5" rx="5" />
             {b.kind === "spine" ? <rect x={r.x} y={r.y} width="6" height={r.h} fill="var(--color-yellow)" /> : null}
             <text x={tx} y={r.y + (layout === "m" ? 21 : 26)} textAnchor={centered ? "middle" : "start"} fontSize="13.5" fontWeight="600" fill={s.title} fontFamily="var(--font-sans)">
-              {b.title}
+              {label(b, lang).title}
             </text>
             <text x={tx} y={r.y + (layout === "m" ? 39 : 46)} textAnchor={centered ? "middle" : "start"} fontSize="11" fill={s.detail} fontFamily="var(--font-mono)">
-              {b.detail}
+              {label(b, lang).detail}
             </text>
           </g>
         );
@@ -108,24 +126,25 @@ function Diagram({ layout }: { layout: "d" | "m" }) {
   );
 }
 
-export function DomainsDiagram() {
+export function DomainsDiagram({ lang = "nl" }: { lang?: Lang }) {
+  const t = TEXT[lang];
   return (
     <figure>
       <div className="hidden sm:block">
-        <Diagram layout="d" />
+        <Diagram layout="d" lang={lang} />
       </div>
       <div className="sm:hidden">
-        <Diagram layout="m" />
+        <Diagram layout="m" lang={lang} />
       </div>
       <figcaption className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs text-on-ink-muted">
         <span className="inline-flex items-center gap-2">
-          <span className="size-2.5 border border-ink-line bg-ink-2" aria-hidden="true" /> Domeinen
+          <span className="size-2.5 border border-ink-line bg-ink-2" aria-hidden="true" /> {t.domains}
         </span>
         <span className="inline-flex items-center gap-2">
           <span className="size-2.5 border border-on-ink-muted bg-ink-2" aria-hidden="true" /> Engineering
         </span>
         <span className="inline-flex items-center gap-2">
-          <span className="size-2.5 bg-yellow" aria-hidden="true" /> Inzicht
+          <span className="size-2.5 bg-yellow" aria-hidden="true" /> {t.insight}
         </span>
       </figcaption>
     </figure>

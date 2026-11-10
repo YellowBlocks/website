@@ -1,8 +1,12 @@
 import type { ReactNode } from "react";
-import { Breadcrumbs, Container } from "@/components/ui/primitives";
+import { Accent, Breadcrumbs, Container } from "@/components/ui/primitives";
 import { JsonLd, breadcrumbSchema } from "@/lib/seo/jsonld";
+import { getDictionary, getLocale } from "@/lib/i18n/server";
 
-/** Dark page header for inner pages, with breadcrumbs and BreadcrumbList JSON-LD. */
+/**
+ * Inner page header: centered title with accent words over the warm glow,
+ * breadcrumbs (+ BreadcrumbList JSON-LD) and optional aside below the intro.
+ */
 export function PageHero({
   title,
   intro,
@@ -16,23 +20,25 @@ export function PageHero({
   children?: ReactNode;
   aside?: ReactNode;
 }) {
-  const all = [{ label: "Home", path: "/" }, ...crumbs];
+  const t = getDictionary();
+  const all = [{ label: t.common.home, path: "/" }, ...crumbs];
   return (
-    <section className="on-ink border-b border-ink-line bg-ink pb-16 pt-10 text-on-ink sm:pb-20 sm:pt-12">
-      <Container>
-        <div className="text-on-ink-muted">
-          <Breadcrumbs items={all.map((c, i) => ({ label: c.label, href: i === all.length - 1 ? undefined : c.path }))} />
+    <section className="hero-glow relative overflow-hidden border-b border-line pb-16 pt-10 sm:pb-20 sm:pt-12">
+      <div aria-hidden="true" className="grid-fade pointer-events-none absolute inset-0" />
+      <Container className="relative">
+        <div className="text-muted">
+          <Breadcrumbs label={t.common.breadcrumb} items={all.map((c, i) => ({ label: c.label, href: i === all.length - 1 ? undefined : c.path }))} />
         </div>
-        <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:items-end">
-          <div className={aside ? "lg:col-span-6" : "lg:col-span-9"}>
-            <h1 className="text-[clamp(2.1rem,1.4rem+2.6vw,3.5rem)] leading-[1.06] text-paper!">{title}</h1>
-            {intro ? <p className="mt-6 max-w-[60ch] text-lg text-on-ink">{intro}</p> : null}
-            {children}
-          </div>
-          {aside ? <div className="lg:col-span-6">{aside}</div> : null}
+        <div className="mx-auto mt-10 max-w-[56rem] text-center">
+          <h1 className="text-[clamp(2.25rem,1.5rem+3vw,3.75rem)] leading-[1.04]">
+            <Accent text={title} />
+          </h1>
+          {intro ? <p className="mx-auto mt-6 max-w-[44rem] text-lg text-muted">{intro}</p> : null}
+          {children}
         </div>
+        {aside ? <div className="mx-auto mt-12 max-w-[56rem]">{aside}</div> : null}
       </Container>
-      <JsonLd data={breadcrumbSchema(all)} />
+      <JsonLd data={breadcrumbSchema(all, getLocale())} />
     </section>
   );
 }

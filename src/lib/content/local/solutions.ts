@@ -1,7 +1,7 @@
 import type { Solution } from "../types";
 
 /**
- * Seed content for the two launch offerings. In production these documents live
+ * Dutch seed content for the offerings (English: ./en/solutions.ts). In production these documents live
  * in Sanity (type "solution"); this file is the fallback and the import source.
  */
 
@@ -193,7 +193,7 @@ const caAssessment: Solution = {
     {
       _type: "ctaSection",
       _key: "cta",
-      heading: "Weet hoe je toegang werkelijk beschermd is",
+      heading: "Weet hoe je toegang *werkelijk beschermd* is",
       body: "Vertel kort over je omgeving en je vraag. Je krijgt een persoonlijke reactie met een voorstel voor de intake.",
       primary: { label: "Vraag een Conditional Access Assessment aan", href: "/contact?onderwerp=conditional-access-assessment", event: "assessment_cta_clicked" },
       secondary: { label: "Plan een kennismaking", href: "/contact?onderwerp=kennismaking", event: "scheduling_link_clicked" },
@@ -295,7 +295,7 @@ const intuneAssessment: Solution = {
     {
       _type: "ctaSection",
       _key: "cta",
-      heading: "Weet wat je werkplekken werkelijk krijgen",
+      heading: "Weet wat je werkplekken *werkelijk krijgen*",
       body: "Vertel kort over je omgeving. Je krijgt een voorstel voor de intake.",
       primary: { label: "Vraag een Intune Assessment aan", href: "/contact?onderwerp=intune-assessment", event: "assessment_cta_clicked" },
       secondary: { label: "Plan een kennismaking", href: "/contact?onderwerp=kennismaking", event: "scheduling_link_clicked" },
@@ -436,7 +436,7 @@ const healthScan: Solution = {
     {
       _type: "ctaSection",
       _key: "cta",
-      heading: "Bespreek je omgeving",
+      heading: "Bespreek je *omgeving*",
       body: "Beschrijf kort je situatie en je vraag. We stellen een passende scope voor.",
       primary: { label: "Vraag een Health Check aan", href: "/contact?onderwerp=microsoft-365-health-check", event: "assessment_cta_clicked" },
       secondary: { label: "Plan een kennismaking", href: "/contact?onderwerp=kennismaking", event: "scheduling_link_clicked" },
@@ -577,7 +577,7 @@ const continuity: Solution = {
     {
       _type: "ctaSection",
       _key: "cta",
-      heading: "Laat je omgeving elke cyclus beter worden",
+      heading: "Laat je omgeving *elke cyclus beter* worden",
       body: "Vertel waar je nu staat. We stellen een passende start en een ritme voor.",
       primary: { label: "Bespreek een verbetercyclus", href: "/contact?onderwerp=tenant-continuiteit", event: "assessment_cta_clicked" },
       secondary: { label: "Plan een kennismaking", href: "/contact?onderwerp=kennismaking", event: "scheduling_link_clicked" },

@@ -1,3 +1,6 @@
+import { dictionaries } from "@/lib/i18n/dictionaries";
+import type { Locale } from "@/lib/i18n/config";
+
 /**
  * Contact form schema and validation. Shared by the server action (authoritative)
  * and the client (instant feedback only).
@@ -15,26 +18,14 @@ export interface ContactInput {
 
 export type FieldErrors = Partial<Record<keyof ContactInput, string>>;
 
-export const scopeQuestions: Record<string, { label: string; options: string[] }> = {
-  "conditional-access-assessment": {
-    label: "Hoeveel Conditional Access-policies heb je ongeveer?",
-    options: ["Tot 30", "30 tot 60", "Meer dan 60", "Weet ik niet"],
-  },
-  "intune-assessment": {
-    label: "Hoeveel apparaten beheer je ongeveer met Intune?",
-    options: ["Tot 250", "250 tot 1.000", "1.000 tot 5.000", "Meer dan 5.000", "Weet ik niet"],
-  },
-  "microsoft-365-health-check": {
-    label: "Hoeveel apparaten beheer je ongeveer met Intune?",
-    options: ["Tot 250", "250 tot 1.000", "1.000 tot 5.000", "Meer dan 5.000", "Weet ik niet"],
-  },
-};
+/** Scope questions per topic, per language (labels and options come from the dictionary). */
+export const scopeQuestions = (lang: Locale) => dictionaries[lang].form.scope;
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const clean = (v: unknown, max: number) =>
   typeof v === "string" ? v.replace(/\u0000/g, "").trim().slice(0, max) : "";
 
-export function parseContact(form: FormData, allowedTopics: string[]): { data: ContactInput; errors: FieldErrors } {
+export function parseContact(form: FormData, allowedTopics: string[], lang: Locale): { data: ContactInput; errors: FieldErrors } {
   const data: ContactInput = {
     name: clean(form.get("name"), 120),
     email: clean(form.get("email"), 200).toLowerCase(),
@@ -44,19 +35,20 @@ export function parseContact(form: FormData, allowedTopics: string[]): { data: C
     consent: form.get("consent") === "on",
     scope: clean(form.get("scope"), 80) || undefined,
   };
-  return { data, errors: validateContact(data, allowedTopics) };
+  return { data, errors: validateContact(data, allowedTopics, lang) };
 }
 
-export function validateContact(d: ContactInput, allowedTopics: string[]): FieldErrors {
+export function validateContact(d: ContactInput, allowedTopics: string[], lang: Locale): FieldErrors {
+  const m = dictionaries[lang].form.errors;
   const e: FieldErrors = {};
-  if (d.name.length < 2) e.name = "Vul je naam in.";
-  if (!EMAIL.test(d.email)) e.email = "Vul een geldig e-mailadres in, bijvoorbeeld naam@bedrijf.nl.";
-  if (d.company.length < 2) e.company = "Vul de naam van je organisatie in.";
-  if (!allowedTopics.includes(d.topic)) e.topic = "Kies een onderwerp.";
-  if (d.message.length < 10) e.message = "Beschrijf je vraag in minimaal een paar woorden.";
-  if (!d.consent) e.consent = "Geef toestemming om je gegevens te gebruiken voor het beantwoorden van je vraag.";
-  const q = scopeQuestions[d.topic];
-  if (d.scope && (!q || !q.options.includes(d.scope))) e.scope = "Kies een van de opties.";
+  if (d.name.length < 2) e.name = m.name;
+  if (!EMAIL.test(d.email)) e.email = m.email;
+  if (d.company.length < 2) e.company = m.company;
+  if (!allowedTopics.includes(d.topic)) e.topic = m.topic;
+  if (d.message.length < 10) e.message = m.message;
+  if (!d.consent) e.consent = m.consent;
+  const q = scopeQuestions(lang)[d.topic];
+  if (d.scope && (!q || !q.options.includes(d.scope))) e.scope = m.scope;
   return e;
 }
 

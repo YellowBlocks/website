@@ -12,7 +12,7 @@ const home: Page = {
       "YellowBlocks helpt organisaties in control te blijven over Microsoft 365, identity en modern work, met consultancy en vaste diensten: Conditional Access Assessment, Intune Assessment en Microsoft 365 Health Check.",
   },
   hero: {
-    heading: "Stay in control.",
+    heading: "Stay *in control.*",
     intro:
       "YellowBlocks helpt organisaties grip te houden op Microsoft 365, identity en modern work. Met consultancy voor ontwerp, inrichting en automatisering, en met vaste diensten die je omgeving onafhankelijk doorlichten.",
     primaryCta: { label: "Bekijk onze diensten", href: "#diensten" },
@@ -27,7 +27,7 @@ const home: Page = {
     {
       _type: "pillarsSection",
       _key: "pillars",
-      heading: "Wat YellowBlocks doet",
+      heading: "Wat YellowBlocks *doet*",
       intro: "Twee manieren om met ons te werken, met hetzelfde doel: een Microsoft-omgeving die doet wat bedoeld is, en zo blijft.",
       pillars: [
         {
@@ -56,14 +56,14 @@ const home: Page = {
     {
       _type: "solutionsSection",
       _key: "services",
-      heading: "Onze diensten",
+      heading: "Onze *diensten*",
       intro: "Onafhankelijk, read-only en met een vaste werkwijze. Kies de diepte op één onderwerp, of de breedte van je hele omgeving.",
       category: "assessment",
     },
     {
       _type: "layersSection",
       _key: "layers",
-      heading: "Waarom: ingesteld is nog niet hetzelfde als geregeld",
+      heading: "Ingesteld is nog niet hetzelfde als *geregeld*",
       intro:
         "In control zijn betekent meer dan een instelling hebben. Een instelling is pas de onderste laag. Of je omgeving geregeld is, hangt af van alles wat erop gestapeld is. De meeste overzichten stoppen bij laag één; de verrassingen zitten in de lagen erboven.",
       topLabel: "Geregeld",
@@ -79,7 +79,7 @@ const home: Page = {
     {
       _type: "cycleSection",
       _key: "cycle",
-      heading: "Hoe we je in control houden",
+      heading: "Hoe we je *in control* houden",
       intro:
         "Of het nu om consultancy of een van onze diensten gaat: we werken volgens dezelfde verbetercyclus. Plan, do, check, act. Elke ronde komt je omgeving een laag verder.",
       centerLabel: "Tenant-\nvolwassenheid",
@@ -123,7 +123,7 @@ const home: Page = {
     {
       _type: "founderSection",
       _key: "founder",
-      heading: "Engineering-gedreven, uit de praktijk",
+      heading: "Engineering-gedreven, *uit de praktijk*",
     },
     {
       _type: "insightsSection",
@@ -146,7 +146,7 @@ const home: Page = {
     {
       _type: "ctaSection",
       _key: "cta",
-      heading: "Bespreek je omgeving",
+      heading: "Bespreek je *omgeving*",
       body: "Vertel waar je tegenaan loopt of wat je wilt bereiken. We denken mee over een passende aanpak, ook als het antwoord is dat je ons niet nodig hebt.",
       primary: { label: "Plan een kennismaking", href: "/contact?onderwerp=kennismaking", event: "scheduling_link_clicked" },
       secondary: { label: "Bekijk de assessments", href: "/oplossingen", event: "assessment_cta_clicked" },
@@ -157,7 +157,7 @@ const home: Page = {
 const methodology: Page = {
   _id: "page.werkwijze",
   slug: "werkwijze",
-  title: "Een vaste werkwijze, van uitlezen tot besluit",
+  title: "Een vaste werkwijze, *van uitlezen tot besluit*",
   intro:
     "Elk assessment volgt dezelfde route: read-only gegevens verzamelen, bevindingen in samenhang analyseren, toetsen aan jouw context en vertalen naar een verbeterplan. Zo is de uitkomst herhaalbaar en controleerbaar.",
   updatedAt: "2026-11-01",
@@ -238,7 +238,7 @@ We werken naast bestaande beheertools, MSP's en platforms. We vervangen ze niet 
     {
       _type: "ctaSection",
       _key: "cta",
-      heading: "Benieuwd hoe dit uitpakt voor jouw omgeving?",
+      heading: "Benieuwd hoe dit uitpakt voor *jouw omgeving?*",
       body: "In een kennismaking bespreken we je vraag en welke aanpak past.",
       primary: { label: "Plan een kennismaking", href: "/contact?onderwerp=kennismaking", event: "scheduling_link_clicked" },
       secondary: { label: "Bekijk de assessments", href: "/oplossingen", event: "assessment_cta_clicked" },
@@ -249,7 +249,7 @@ We werken naast bestaande beheertools, MSP's en platforms. We vervangen ze niet 
 const about: Page = {
   _id: "page.over-ons",
   slug: "over-ons",
-  title: "Een specialist in Microsoft-omgevingen, met een methode",
+  title: "Een specialist in Microsoft-omgevingen, *met een methode*",
   intro:
     "YellowBlocks is een Nederlands technologiebedrijf, gespecialiseerd in Microsoft cloud, modern workplace, security en automatisering. We helpen organisaties begrijpen wat hun configuratie werkelijk doet.",
   updatedAt: "2026-11-01",
@@ -291,7 +291,7 @@ De naam zegt het: losse blokken, die pas betekenis krijgen als je ziet hoe ze sa
     {
       _type: "ctaSection",
       _key: "cta",
-      heading: "Kennismaken?",
+      heading: "*Kennismaken?*",
       body: "Een gesprek over je omgeving en je vraag, zonder verplichtingen.",
       primary: { label: "Plan een kennismaking", href: "/contact?onderwerp=kennismaking", event: "scheduling_link_clicked" },
     },

@@ -1,15 +1,17 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useState } from "react";
+import { useDictionary } from "@/lib/i18n/client";
 
 interface Item {
   label: string;
   href: string;
 }
 
-export function MobileNav({ items, solutions }: { items: Item[]; solutions: Item[] }) {
+export function MobileNav({ items, solutions, cta }: { items: Item[]; solutions: Item[]; cta: string }) {
+  const t = useDictionary();
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const panelId = useId();
@@ -41,7 +43,7 @@ export function MobileNav({ items, solutions }: { items: Item[]; solutions: Item
         onClick={() => setOpen((v) => !v)}
         className="inline-flex size-11 items-center justify-center text-paper"
       >
-        <span className="sr-only">{open ? "Menu sluiten" : "Menu openen"}</span>
+        <span className="sr-only">{open ? t.common.menuClose : t.common.menuOpen}</span>
         <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true">
           {open ? (
             <path d="M4 4l14 14M18 4L4 18" stroke="currentColor" strokeWidth="2" />
@@ -58,13 +60,13 @@ export function MobileNav({ items, solutions }: { items: Item[]; solutions: Item
       <div
         id={panelId}
         hidden={!open}
-        className="fixed inset-x-0 bottom-0 top-[4.25rem] overflow-y-auto border-t border-ink-line bg-ink px-5 pb-10 pt-4 sm:px-8"
+        className="fixed inset-x-0 bottom-0 top-[4.5rem] overflow-y-auto border-t border-line bg-canvas px-5 pb-10 pt-4 sm:px-8"
       >
-        <nav aria-label="Mobiel menu">
-          <ul className="divide-y divide-ink-line">
+        <nav aria-label={t.common.mobileMenu}>
+          <ul className="divide-y divide-line">
             {items.map((item) => (
               <li key={item.href}>
-                <Link href={item.href} className="flex min-h-14 items-center text-xl font-semibold text-paper">
+                <Link href={item.href} className="flex min-h-14 items-center font-display text-xl font-semibold text-paper">
                   {item.label}
                 </Link>
                 {item.href === "/oplossingen" ? (
@@ -85,9 +87,9 @@ export function MobileNav({ items, solutions }: { items: Item[]; solutions: Item
         <Link
           href="/contact?onderwerp=kennismaking"
           data-track="scheduling_link_clicked"
-          className="mt-8 flex min-h-13 items-center justify-center rounded-[5px] bg-yellow px-5 font-semibold text-ink"
+          className="mt-8 flex min-h-13 items-center justify-center rounded-[var(--radius-block)] bg-yellow px-5 font-semibold text-ink"
         >
-          Plan een kennismaking
+          {cta}
         </Link>
       </div>
     </div>
