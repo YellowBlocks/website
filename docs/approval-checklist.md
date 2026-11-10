@@ -14,6 +14,12 @@ Alles hieronder staat in de site, maar is niet door YellowBlocks bevestigd of ha
 - [ ] **Privacyverklaring voor de assessments**: de tekst uit de Conditional Access-chat aanleveren. Die chat valt buiten dit project, dus de tekst is nog niet verwerkt.
 - [ ] **Logo**: het officiële logo staat erin. Op de donkere achtergrond is het grijs van "Yellow" (#404040) opgehelderd naar #E6E6E6. Het siteaccent is gelijkgetrokken met het logogeel (#FEC61F).
 
+## Update 10 november 2026: nieuwe look en Engelse versie
+- [ ] Nieuwe stijl (geïnspireerd op de look van cloudlifesecurity.com, eigen invulling): bevestigen dat afgeronde hoeken (8px knoppen, 16px kaarten) akkoord zijn; eerder was 5px gevraagd.
+- [ ] Engelse teksten nalezen: homepage, de vier diensten, werkwijze, over ons. De Engelse juridische pagina's zijn een vertaling van de concepten; de Nederlandse versie is leidend.
+- [ ] Engelse URL's akkoord: `/en/solutions`, `/en/approach`, `/en/about`, `/en/insights`, `/en/terms`, `/en/solutions/tenant-continuity`.
+- [ ] Artikelen blijven Nederlandstalig; de Engelse inzichtenpagina toont ze met een melding. Akkoord, of Engelse versies schrijven?
+
 ## Homepage en diensten
 - [ ] **Het lagenmodel op de homepage** nalezen: de vijf lagen (Ingesteld, Toegewezen, Werkzaam, Actueel, Aantoonbaar), de koppeling aan inzicht, analyse, (auto)remediatie, monitoring en vastlegging, en de vier stappen van de cyclus.
 - [ ] **Automatisch herstel**: de site noemt "automatisch herstel waar dat verantwoord is". Bevestigen dat je dit aanbiedt.
