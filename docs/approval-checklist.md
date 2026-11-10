@@ -35,9 +35,9 @@ Alles hieronder staat in de site, maar is niet door YellowBlocks bevestigd of ha
 - [ ] Spreekbeurten: niet vermeld, omdat ze niet te verifiëren waren. Aanvullen als je ze wilt tonen.
 
 ## Merk
-- [ ] Officieel logo (vector) aanleveren. Vervang `src/components/visuals/Wordmark.tsx` en `src/app/icon.svg`. Het huidige merkteken is een tijdelijke interpretatie.
-- [ ] Donker thema (neutraal grijs met geel, 5px hoeken) bevestigen, ook in combinatie met het officiële logo: dat moet op een donkere achtergrond werken.
-- [ ] Lettertype bevestigen: Figtree als web-alternatief voor Avenir Next. Avenir Next kan via een webfontlicentie in `src/fonts/` worden geplaatst.
+- [x] Officieel logo (vector) aangeleverd (9 nov 2026).
+- [ ] Donker thema (10 nov 2026): bijna-zwart (#0C0E12) met kaartvlakken (#15181E), geel als accent en als verloop op accentwoorden. Bevestigen.
+- [ ] Lettertypes bevestigen: Space Grotesk (koppen) en Inter (tekst), beide open source. Avenir Next kan via een webfontlicentie in `src/fonts/` worden geplaatst.
 
 ## Inhoud
 - [ ] De drie artikelen in /inzichten nalezen. Ze zijn nieuw geschreven in Sanders naam.
